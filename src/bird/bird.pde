@@ -7,13 +7,15 @@ double gravity = 2;
 int pipeX = 500;
 int upperY = 0;
 int upperPipeHeight = 300;
-int pipeGap =160;
+int pipeGap =190;
 int lowerY;
 
 int score = 0;
 
+boolean crashed =false;
 
 
+int speed= 10;
 
 void setup(){
 
@@ -23,54 +25,77 @@ void setup(){
 }
 
 void draw(){
+  
+  crashed = crashCheck();
+  
+  if (crashed == true){
+    fill(0,0,0);
+    textSize(19); 
+    //System.out.println("Crashed True");
+    text("You died with a final score of "  +score, 180, 375);
    
+   
+   }
+   
+   else{
+    background(135, 206, 250);
+    
+    fill(0,0,0);
+    textSize(19); 
+    text("Score: "  +score, 410, 20);
+    
+    fill (50,205,50);
+   
+    ellipse(birdX,birdY, 75, 50);
   
-  
-  
-  background(135, 206, 250);
-  fill (50,205,50);
-  
-  ellipse(birdX,birdY, 75, 50);
-  
-  birdY+=gravity;
-  gravity+=0.25;
+    birdY+=gravity;
+    gravity+=0.25;
  
   
-  teleportPipes();
-  crashCheck();
+    teleportPipes();
+    crashCheck();
   
-  
+   }
 }
 
 void mousePressed() {
-   birdY-=birdYVelocity;
-   
-   gravity=0;
+    if(crashed== false){
+     birdY-=birdYVelocity;
+     gravity=0;
+    }
   
 }
 
 void teleportPipes(){
    fill(255, 0, 0);
+   
   rect(pipeX, upperY, 100, upperPipeHeight);
   
+
+
   lowerY = upperY + upperPipeHeight + pipeGap;
   
   rect(pipeX, lowerY, 100, height);
-  pipeX-=1; 
+  pipeX-=speed; 
  
   if (pipeX < -100){
+    
+    upperPipeHeight = (int) random(100, 350);
     pipeX=500;
     
     score++;
     System.out.println(score);
+    
   } 
 }
 
-void crashCheck() {
-  if (birdX == pipeX){
-    System.out.println("Crash");
-    
-   //return true;
+boolean crashCheck() {
+  if (birdX >= pipeX && pipeX >= 25){
+    if(birdY <= upperPipeHeight || birdY >= upperPipeHeight+pipeGap-10){
+      //System.out.println("Crashed");
+      return true; 
+    }
   }
-  
+
+  return false;
 }
